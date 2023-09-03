@@ -1,0 +1,6 @@
+# vim: ft=yaml
+
+formatter:
+  type: basic
+  retain_line_breaks: true
+  pad_line_comments: 2

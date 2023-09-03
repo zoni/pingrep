@@ -1,0 +1,52 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: f71fa2c1f9cf5cb705f73dffe4b21f7c61470ba9  # frozen: v4.4.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-yaml
+      - id: check-json
+        exclude: "^.vscode/"
+      - id: end-of-file-fixer
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-shebang-scripts-are-executable
+      - id: check-symlinks
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+  - repo: local
+    hooks:
+      - id: gofmt
+        name: gofmt
+        language: system
+        types: [go]
+        entry: gofmt
+        args: ["-d", "-w"]
+      - id: gotest
+        name: go test
+        language: system
+        types: [go]
+        entry: go
+        args: ["test", "-short", "-timeout=30s", "./..."]
+        pass_filenames: false
+      - id: gomodtidy
+        name: go mod tidy
+        language: system
+        types: [go]
+        entry: go
+        args: ["mod", "tidy"]
+        pass_filenames: false
+  - repo: https://github.com/golangci/golangci-lint
+    rev: a9378d9bb87e3d5952a7586d1008c6fac3ebd764  # frozen: v1.54.1
+    hooks:
+      - id: golangci-lint
+  - repo: https://github.com/google/yamlfmt
+    rev: c433f347693ee3bbbfd4f626e502685dd8aafa82  # frozen: v0.9.0
+    hooks:
+      - id: yamlfmt
+  - repo: https://github.com/codespell-project/codespell
+    rev: 355e50e14fd03fe83e4ed9aa0489824b150b3b58  # frozen: v2.2.5
+    hooks:
+      - id: codespell
