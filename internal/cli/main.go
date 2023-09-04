@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"fmt"
+
 	"github.com/99designs/keyring"
 	"github.com/alecthomas/kong"
 )
@@ -23,20 +25,27 @@ type cli struct {
 	Update updateCmd `cmd:"" help:"Update the local cache of bookmarks."`
 }
 
-func Main() {
+func bindKeyring(ctx *kong.Context) error {
 	kr, err := keyring.Open(keyring.Config{
 		ServiceName:             programName,
 		LibSecretCollectionName: "login",
 	})
-	exitIfError(err)
+	if err != nil {
+		return fmt.Errorf("cannot open keyring: %w", err)
+	}
+	ctx.BindTo(kr, (*keyring.Keyring)(nil))
+	return nil
+}
 
+func Main() {
 	var cli cli
 	ctx := kong.Parse(&cli,
 		kong.Name(programName),
 		kong.Description(`pingrep is a command-line tool for searching Pinboard bookmarks.`),
-		kong.BindTo(kr, (*keyring.Keyring)(nil)),
 	)
 
-	err = ctx.Run(&cli.globals)
+	exitIfError(bindKeyring(ctx))
+
+	err := ctx.Run(&cli.globals)
 	exitIfError(err)
 }
