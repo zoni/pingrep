@@ -12,11 +12,13 @@ import (
 	"github.com/zoni/pingrep/internal/pinboard"
 )
 
+// templateFuncs contains functions available to templates.
 var templateFuncs = template.FuncMap{
 	"formatTags": formatTags,
 	"oneline":    oneline,
 }
 
+// formatTags formats tags for display.
 func formatTags(prependHashTag bool, tags []string) string {
 	if !prependHashTag {
 		return strings.Join(tags, " ")
@@ -27,6 +29,8 @@ func formatTags(prependHashTag bool, tags []string) string {
 	return "#" + strings.Join(tags, " #")
 }
 
+// oneline replaces all forms of extra whitespace (newlines, tabs, consecutive
+// spaces) with a single space to ensure string consumes only one line.
 func oneline(s string) string {
 	s = strings.ReplaceAll(s, "\t", " ")
 	s = strings.ReplaceAll(s, "\r\n", " ")
@@ -35,6 +39,7 @@ func oneline(s string) string {
 	return s
 }
 
+// exitIfError prints error and exits with a non-zero exit code if err is not nil.
 func exitIfError(err error) {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
@@ -42,14 +47,16 @@ func exitIfError(err error) {
 	}
 }
 
+// getPinboardToken returns the pinboard API token from the keyring.
 func getPinboardToken(kr keyring.Keyring) (string, error) {
 	token, err := kr.Get(keyringAPITokenKeyName)
 	if err != nil {
-		return "", fmt.Errorf("get API token from keyring: %w. Try `%s login` first", err, programName)
+		return "", fmt.Errorf("read API token from keyring: %w. Try `%s login` first", err, programName)
 	}
 	return string(token.Data), nil
 }
 
+// loadCollection returns the pinboard bookmark collection from the local cache.
 func loadCollection() (*pinboard.Collection, error) {
 	path, err := xdg.DataFile(fmt.Sprintf("%s/bookmarks.json", programName))
 	if err != nil {
