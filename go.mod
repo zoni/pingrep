@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/99designs/keyring v1.2.2
+	github.com/adrg/xdg v0.4.0
 	github.com/alecthomas/kong v0.8.0
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/zoni/go-pinboard v0.0.0-20230903140202-d7035e326b73
@@ -11,7 +12,6 @@ require (
 
 require (
 	github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4 // indirect
-	github.com/adrg/xdg v0.4.0 // indirect
 	github.com/danieljoos/wincred v1.1.2 // indirect
 	github.com/dvsekhvalnov/jose2go v1.5.0 // indirect
 	github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 // indirect
