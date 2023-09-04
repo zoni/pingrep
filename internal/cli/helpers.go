@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 	"text/template"
+	"time"
 
 	"github.com/99designs/keyring"
 	"github.com/adrg/xdg"
@@ -56,6 +57,15 @@ func getPinboardToken(kr keyring.Keyring) (string, error) {
 	return string(token.Data), nil
 }
 
+// createPinboardClient returns a new pinboard client.
+func createPinboardClient(kr keyring.Keyring) (*pinboard.Client, error) {
+	token, err := getPinboardToken(kr)
+	if err != nil {
+		return nil, err
+	}
+	return pinboard.NewClient(token)
+}
+
 // loadCollection returns the pinboard bookmark collection from the local cache.
 func loadCollection() (*pinboard.Collection, error) {
 	path, err := xdg.DataFile(fmt.Sprintf("%s/bookmarks.json", programName))
@@ -71,4 +81,18 @@ func loadCollection() (*pinboard.Collection, error) {
 		return nil, fmt.Errorf("load collection: %w", err)
 	}
 	return collection, nil
+}
+
+// getLastUpdateTimestamp returns the time of the last update of the bookmarks file.
+func getLastUpdateTimestamp(path string) (time.Time, error) {
+	collection, err := pinboard.FromFile(path)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			// If the file doesn't exist, we'll just return the zero value,
+			// a date that is well in the past and so forces an update.
+			return time.Time{}, nil
+		}
+		return time.Time{}, err
+	}
+	return collection.LastUpdate, nil
 }
