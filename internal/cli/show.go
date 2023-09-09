@@ -13,8 +13,9 @@ func displayTemplate() *template.Template {
 			strings.TrimSpace(`
 {{ .bookmark.URL }}
 
-{{ .bookmark.Title }}
-{{ .bookmark.Description }}
+{{ .bookmark.Title | trimspace}}
+
+{{ .bookmark.Description | trimspace | wordwrap 80 }}
 
 ---
 

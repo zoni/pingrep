@@ -10,6 +10,7 @@ import (
 
 	"github.com/99designs/keyring"
 	"github.com/adrg/xdg"
+	"github.com/mitchellh/go-wordwrap"
 	"github.com/zoni/pingrep/internal/pinboard"
 )
 
@@ -17,6 +18,8 @@ import (
 var templateFuncs = template.FuncMap{
 	"formatTags": formatTags,
 	"oneline":    oneline,
+	"trimspace":  strings.TrimSpace,
+	"wordwrap":   func(lim uint, s string) string { return wordwrap.WrapString(s, lim) },
 }
 
 // formatTags formats tags for display.
