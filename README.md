@@ -40,6 +40,8 @@ This command opens an interactive search interface using [`fzf`][fzf], allowing 
 #### Keybindings
 
 - `enter`: Open the selected bookmark in a browser, then exit.
+- `ctrl+o`: Open the selected bookmark in a browser, don't exit.
+- `ctrl+e`: Open the selected bookmark on [pinboard.in][pinboard].
 - `ctrl-y`: Copy the URL of the selected bookmark to the clipboard (requires [cbcopy]).
 
 ### `pingrep search <query> ...`

@@ -16,14 +16,16 @@ func fzfTemplate() *template.Template {
 	return template.Must(
 		template.New("fzf").Funcs(templateFuncs).Parse(
 			strings.TrimSpace(`
-{{ range .Bookmarks -}}
+{{ range .Collection.Bookmarks -}}
 {{ .Title | oneline -}}
 {{ $.Separator -}}
 {{ .URL | oneline -}}
 {{ $.Separator -}}
 {{ .Description | oneline -}}
 {{ $.Separator -}}
-{{ .Tags | formatTags true }}
+{{ .Tags | formatTags true -}}
+{{ $.Separator -}}
+https://pinboard.in/u:{{ $.Collection.User }}/before:{{ .SavedAt.Unix }}
 {{ end }}
 `)))
 }
@@ -48,6 +50,8 @@ func (cmd *fzfCmd) Run(_ *globals) error {
 		"--preview", fmt.Sprintf("%s show {2}", os.Args[0]),
 		"--bind", "ctrl-y:execute-silent(echo {2} | cbcopy)",
 		"--bind", fmt.Sprintf("enter:become(%s browse {2})", os.Args[0]),
+		"--bind", fmt.Sprintf("ctrl-o:execute-silent(%s browse {2})", os.Args[0]),
+		"--bind", fmt.Sprintf("ctrl-e:execute-silent(%s browse {5})", os.Args[0]),
 	)
 	fzf.Stdout = os.Stdout
 	fzf.Stderr = os.Stderr
@@ -60,8 +64,8 @@ func (cmd *fzfCmd) Run(_ *globals) error {
 		err := fzfTemplate().Execute(
 			stdin,
 			map[string]interface{}{
-				"Bookmarks": collection.Bookmarks,
-				"Separator": fzfFieldSeparator,
+				"Collection": collection,
+				"Separator":  fzfFieldSeparator,
 			})
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "execute template: %v\n", err)
