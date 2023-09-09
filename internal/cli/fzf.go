@@ -12,7 +12,10 @@ const fzfFieldSeparator = "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"
 
 type fzfCmd struct{}
 
-var fzfTemplate = template.Must(template.New("fzf").Funcs(templateFuncs).Parse(strings.TrimSpace(`
+func fzfTemplate() *template.Template {
+	return template.Must(
+		template.New("fzf").Funcs(templateFuncs).Parse(
+			strings.TrimSpace(`
 {{ range .Bookmarks -}}
 {{ .Title | oneline -}}
 {{ $.Separator -}}
@@ -23,6 +26,7 @@ var fzfTemplate = template.Must(template.New("fzf").Funcs(templateFuncs).Parse(s
 {{ .Tags | formatTags true }}
 {{ end }}
 `)))
+}
 
 func (cmd *fzfCmd) Run(_ *globals) error {
 	collection, err := loadCollection()
@@ -53,7 +57,7 @@ func (cmd *fzfCmd) Run(_ *globals) error {
 	}
 	go func() {
 		defer stdin.Close()
-		err := fzfTemplate.Execute(
+		err := fzfTemplate().Execute(
 			stdin,
 			map[string]interface{}{
 				"Bookmarks": collection.Bookmarks,

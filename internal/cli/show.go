@@ -7,7 +7,10 @@ import (
 	"text/template"
 )
 
-var displayTemplate = template.Must(template.New("display").Funcs(templateFuncs).Parse(strings.TrimSpace(`
+func displayTemplate() *template.Template {
+	return template.Must(
+		template.New("display").Funcs(templateFuncs).Parse(
+			strings.TrimSpace(`
 {{ .bookmark.URL }}
 
 {{ .bookmark.Title }}
@@ -19,6 +22,7 @@ Tags: {{ .bookmark.Tags | formatTags false }}
 Saved at: {{ .bookmark.SavedAt }}
 Context: https://pinboard.in/u:{{ .user }}/before:{{ .bookmark.SavedAt.Unix }}
 `) + "\n"))
+}
 
 type showCmd struct {
 	URL string `arg:"" help:"The URL of the bookmark to show."`
@@ -31,7 +35,7 @@ func (cmd *showCmd) Run(_ *globals) error {
 	}
 	for _, bookmark := range collection.Bookmarks {
 		if bookmark.URL == cmd.URL {
-			return displayTemplate.Execute(
+			return displayTemplate().Execute(
 				os.Stdout,
 				map[string]interface{}{
 					"bookmark": bookmark,
