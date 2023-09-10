@@ -1,7 +1,10 @@
 package cli
 
 import (
-	"errors"
+	"strings"
+
+	"github.com/kr/pretty"
+	"github.com/zoni/pingrep/internal/query"
 )
 
 type searchCmd struct {
@@ -9,5 +12,10 @@ type searchCmd struct {
 }
 
 func (cmd *searchCmd) Run(_ *globals) error {
-	return errors.New("not implemented")
+	result, err := query.Parse(strings.Join(cmd.Query, " "))
+	if err != nil {
+		return err
+	}
+	pretty.Print(result)
+	return nil
 }

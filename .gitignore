@@ -21,3 +21,4 @@ go.work
 # Local environment-related files
 .env
 .tool-versions
+.vscode
