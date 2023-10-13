@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/99designs/keyring v1.2.2
 	github.com/adrg/xdg v0.4.0
-	github.com/alecthomas/kong v0.8.0
+	github.com/alecthomas/kong v0.8.1
 	github.com/mitchellh/go-wordwrap v1.0.1
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/zoni/go-pinboard v0.0.0-20230903140202-d7035e326b73
