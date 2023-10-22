@@ -1,0 +1,27 @@
+[package]
+name = "pingrep"
+version = "0.1.0"
+edition = "2021"
+license = "BSD-2-Clause-Patent"
+
+[lib]
+name = "pingrep"
+path = "src/lib.rs"
+
+[[bin]]
+name = "pingrep"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1.0.75"
+chrono = { version = "0.4.31", features = ["serde"] }
+clap = { version = "4.4.6", features = ["derive"] }
+directories = "5.0.1"
+dirs = "5.0.1"
+keyring = "2.0.5"
+paste = "1.0.14"
+reqwest = { version = "0.11.20", features = ["blocking", "json"] }
+rpassword = "7.2.0"
+serde = { version = "1.0.163", features = ["serde_derive"] }
+serde_json = "1.0.107"
+snafu = "0.7.5"
