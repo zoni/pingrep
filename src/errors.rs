@@ -1,8 +1,9 @@
 use super::pinboard;
-use snafu::Snafu;
+use snafu::{Snafu, Whatever};
 use std::path::PathBuf;
 
 pub type Result<T> = std::result::Result<T, Error>;
+pub type WhateverResult<T> = std::result::Result<T, Whatever>;
 
 #[non_exhaustive]
 #[derive(Debug, Snafu)]
@@ -57,17 +58,11 @@ pub enum Error {
         source: keyring::error::Error,
     },
 
-    #[snafu(display("Unable to prompt for password"))]
-    PasswordPromptError { source: std::io::Error },
-
     #[snafu(display("{message}"))]
     PinboardClientError {
         message: String,
         source: pinboard::Error,
     },
-
-    #[snafu(display("Pinboard login failed"))]
-    PinboardLoginError { source: pinboard::Error },
 
     #[snafu(display("Not implemented"))]
     NotImplemented,

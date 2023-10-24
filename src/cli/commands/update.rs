@@ -7,11 +7,13 @@ use snafu::ResultExt;
 #[derive(Parser)]
 pub struct Args {}
 
-pub fn command(ctx: Context, _args: Args) -> Result<()> {
-    let client = ctx.get_pinboard_client()?;
-    let resp = client.last_update().context(PinboardClientSnafu {
-        message: "Unable to get last update time from pinboard",
-    })?;
+pub fn command(ctx: Context, _args: Args) -> WhateverResult<()> {
+    let client = ctx
+        .get_pinboard_client()
+        .whatever_context("Cannot initialize pinboard client")?;
+    let resp = client
+        .last_update()
+        .whatever_context("Unable to get last update time from pinboard")?;
     println!("Last update: {}", resp.last_updated);
     Ok(())
 }

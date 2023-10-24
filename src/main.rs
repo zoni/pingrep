@@ -1,5 +1,8 @@
 use pingrep::cli;
+use pingrep::errors::WhateverResult;
 
-fn main() -> anyhow::Result<()> {
-    Ok(cli::main()?)
+#[snafu::report]
+fn main() -> WhateverResult<()> {
+    cli::main()?;
+    Ok(())
 }

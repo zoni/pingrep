@@ -34,13 +34,14 @@ pub struct Args {
     verbose: bool,
 }
 
-subcommands!(hello, login, update);
+subcommands!(login, update, hello);
 
-pub fn main() -> Result<()> {
+pub fn main() -> WhateverResult<()> {
     let args = Args::parse();
     let ctx = Context {
-        appdir: initialize_appdir()?,
-        api_token_entry: initialize_keyring("pinboard-api-token")?,
+        appdir: initialize_appdir().whatever_context("cannot initialize appdir")?,
+        api_token_entry: initialize_keyring("pinboard-api-token")
+            .whatever_context("cannot initialize keyring")?,
         verbose: args.verbose,
     };
     Commands::run(ctx, args)

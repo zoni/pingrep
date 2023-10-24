@@ -10,13 +10,12 @@ macro_rules! subcommands {
         }
 
         impl Commands {
-            fn run(ctx: Context, args: Args) -> Result<()> {
+            fn run(ctx: Context, args: Args) -> std::result::Result<(), snafu::Whatever> {
               match args.command {
                 $(
-                  Commands::[<$module:camel>](args) => $module::command(ctx, args)?,
+                  Commands::[<$module:camel>](args) => $module::command(ctx, args),
                 )*
               }
-              Ok(())
             }
         }
       }
