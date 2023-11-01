@@ -6,6 +6,7 @@ use std::path::PathBuf;
 
 use super::errors::*;
 use super::pinboard;
+use super::pinboard::client::Client;
 use crate::subcommands;
 use clap::{Parser, Subcommand};
 use commands::*;
@@ -66,16 +67,15 @@ fn initialize_keyring(key: &str) -> Result<keyring::Entry> {
 }
 
 impl Context {
-    fn get_pinboard_client(self) -> Result<pinboard::Client> {
+    fn get_pinboard_client(self) -> Result<Client> {
         let token = self.api_token_entry.get_password().context(KeyRingSnafu {
             message: "Cannot get pinboard API token from keyring",
         })?;
 
-        let client = pinboard::Client::new(pinboard::PINBOARD_API_URL, &token).context(
-            PinboardClientSnafu {
+        let client =
+            Client::new(pinboard::PINBOARD_API_URL, &token).context(PinboardClientSnafu {
                 message: "Cannot initialize pinboard client",
-            },
-        )?;
+            })?;
         Ok(client)
     }
 }

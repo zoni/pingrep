@@ -1,17 +1,7 @@
+use super::{HttpSnafu, Result};
 use reqwest::{IntoUrl, Url};
 use serde::Deserialize;
-use snafu::{ResultExt, Snafu};
-
-pub type Result<T> = std::result::Result<T, Error>;
-
-pub const PINBOARD_API_URL: &str = "https://api.pinboard.in/v1/";
-
-#[non_exhaustive]
-#[derive(Debug, Snafu)]
-pub enum Error {
-    #[snafu(display("HTTP request error: {source}"))]
-    HttpError { source: reqwest::Error },
-}
+use snafu::ResultExt;
 
 /// This is a minimal pinboard API client with implementations only for endpoints needed by
 /// pingrep.
@@ -56,8 +46,6 @@ impl Client {
             .send()
             .context(HttpSnafu {})?;
         response.error_for_status_ref().context(HttpSnafu {})?;
-        response
-            .json::<LastUpdateResponse>()
-            .context(HttpSnafu {})
+        response.json::<LastUpdateResponse>().context(HttpSnafu {})
     }
 }

@@ -1,6 +1,7 @@
 use crate::cli::Context;
 use crate::errors::WhateverResult;
 use crate::pinboard;
+use crate::pinboard::client::Client;
 use clap::Parser;
 use rpassword::prompt_password;
 use snafu::prelude::*;
@@ -13,7 +14,7 @@ pub fn command(ctx: Context, _args: Args) -> WhateverResult<()> {
     let password = prompt_password("Enter API key from https://pinboard.in/settings/password: ")
         .whatever_context("Failed to read password")?;
 
-    let client = pinboard::Client::new(pinboard::PINBOARD_API_URL, &password)
+    let client = Client::new(pinboard::PINBOARD_API_URL, &password)
         .whatever_context("Cannot initialize pinboard client")?;
 
     ctx.api_token_entry
