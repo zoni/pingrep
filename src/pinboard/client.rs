@@ -1,4 +1,4 @@
-use super::{HttpSnafu, Result};
+use super::{Bookmark, HttpSnafu, Result};
 use reqwest::{IntoUrl, Url};
 use serde::Deserialize;
 use snafu::ResultExt;
@@ -47,5 +47,22 @@ impl Client {
             .context(HttpSnafu {})?;
         response.error_for_status_ref().context(HttpSnafu {})?;
         response.json::<LastUpdateResponse>().context(HttpSnafu {})
+    }
+
+    /// Get all the user's bookmarks.
+    pub fn bookmarks(&self) -> Result<Vec<Bookmark>> {
+        let url = self
+            .base_url
+            .join("posts/all")
+            .expect("bad url in last_update");
+        let params = [("auth_token", self.token.as_str()), ("format", "json")];
+        let response = self
+            .client
+            .get(url)
+            .query(&params)
+            .send()
+            .context(HttpSnafu {})?;
+        response.error_for_status_ref().context(HttpSnafu {})?;
+        response.json::<Vec<Bookmark>>().context(HttpSnafu {})
     }
 }
