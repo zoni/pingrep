@@ -13,11 +13,14 @@ use commands::*;
 use directories::ProjectDirs;
 
 /// The global command context
+#[derive(Debug)]
 pub struct Context {
     /// Enable debug statements
     pub verbose: bool,
     /// The application directory
     pub appdir: PathBuf,
+    /// The bookmark collection file under appdir
+    pub bookmark_file: PathBuf,
     /// The pinboard API token keyring entry
     pub api_token_entry: keyring::Entry,
 }
@@ -39,8 +42,11 @@ subcommands!(login, update, hello);
 
 pub fn main() -> WhateverResult<()> {
     let args = Args::parse();
+    let appdir = initialize_appdir().whatever_context("cannot initialize appdir")?;
+
     let ctx = Context {
-        appdir: initialize_appdir().whatever_context("cannot initialize appdir")?,
+        appdir: appdir.clone(),
+        bookmark_file: appdir.join("bookmarks.json"),
         api_token_entry: initialize_keyring("pinboard-api-token")
             .whatever_context("cannot initialize keyring")?,
         verbose: args.verbose,
@@ -67,7 +73,7 @@ fn initialize_keyring(key: &str) -> Result<keyring::Entry> {
 }
 
 impl Context {
-    fn get_pinboard_client(self) -> Result<Client> {
+    fn get_pinboard_client(&self) -> Result<Client> {
         let token = self.api_token_entry.get_password().context(KeyRingSnafu {
             message: "Cannot get pinboard API token from keyring",
         })?;

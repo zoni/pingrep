@@ -20,23 +20,30 @@ pub enum Error {
     #[snafu(display("Unable to determine application directory"))]
     AppDirLookupError {},
 
-    #[snafu(display("IO error on '{}'", path.display()))]
+    #[snafu(display("IO error{}", path.clone().map_or("".to_owned(), |p| format!(" on {:?}", p))))]
     #[allow(clippy::upper_case_acronyms)]
     IOError {
-        path: PathBuf,
+        path: Option<PathBuf>,
         source: std::io::Error,
     },
 
-    #[snafu(display("Read error on '{}'", path.display()))]
+    #[snafu(display("Read error{}", path.clone().map_or("".to_owned(), |p| format!(" on {:?}", p))))]
     ReadError {
-        path: PathBuf,
+        path: Option<PathBuf>,
         source: std::io::Error,
     },
 
-    #[snafu(display("Write error on '{}'", path.display()))]
+    #[snafu(display("Write error{}", path.clone().map_or("".to_owned(), |p| format!(" on {:?}", p))))]
     WriteError {
-        path: PathBuf,
+        path: Option<PathBuf>,
         source: std::io::Error,
+    },
+
+    #[snafu(display("Unable to persist temporary file {:?}{}", path.display(), dest.clone().map_or("".to_owned(), |p| format!(" to {:?}", p))))]
+    PersistError {
+        path: PathBuf,
+        dest: Option<PathBuf>,
+        source: tempfile::PersistError,
     },
 
     #[snafu(display("Failed to execute {} with args {:?}", cmd, args))]
@@ -71,5 +78,24 @@ pub enum Error {
 impl From<GeneralSnafu<std::string::String>> for Error {
     fn from(e: GeneralSnafu<std::string::String>) -> Self {
         Error::GeneralError { message: e.message }
+    }
+}
+
+impl From<std::io::Error> for Error {
+    fn from(e: std::io::Error) -> Self {
+        Error::IOError {
+            path: None,
+            source: e,
+        }
+    }
+}
+
+impl From<tempfile::PersistError> for Error {
+    fn from(e: tempfile::PersistError) -> Self {
+        Error::PersistError {
+            path: e.file.path().to_path_buf(),
+            dest: None,
+            source: e,
+        }
     }
 }
