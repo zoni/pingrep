@@ -11,8 +11,7 @@ pub fn textwrap<V: std::fmt::Display>(text: V, max_chars: usize) -> Result<Strin
 pub fn oneline<V: std::fmt::Display>(text: V) -> Result<String> {
     let text = text.to_string();
     Ok(text
-        .replace("\n", " ")
-        .replace("\t", " ")
+        .replace(['\n', '\t'], " ")
         .replace("\r\n", " ")
         .replace("  ", " "))
 }

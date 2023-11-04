@@ -68,7 +68,7 @@ where
             E: de::Error,
         {
             Ok(s.split(' ')
-                .filter(|&tag| tag != "")
+                .filter(|&tag| !tag.is_empty())
                 .map(|tag| tag.to_owned())
                 .collect())
         }

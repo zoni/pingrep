@@ -31,7 +31,7 @@ pub fn command(ctx: Context, args: Args) -> WhateverResult<()> {
 
     let template = ShowTemplate {
         user: &collection.user,
-        bookmark: &bookmark,
+        bookmark,
     };
     println!(
         "{}",
