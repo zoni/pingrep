@@ -1,6 +1,6 @@
 {{ bookmark.url }}
 
-{{ bookmark.title|trim }}
+{{ bookmark.title|trim|textwrap(80) }}
 
 {{ bookmark.description|trim|textwrap(80) }}
 
