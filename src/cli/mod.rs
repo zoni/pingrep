@@ -1,4 +1,5 @@
 mod commands;
+mod filters;
 
 use std::fs::File;
 use std::io::BufReader;
