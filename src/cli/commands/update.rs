@@ -6,7 +6,7 @@ use clap::Parser;
 use snafu::ResultExt;
 use std::fs::File;
 
-/// Set the pinboard API token (saved to system keyring)
+/// Update the local cache of bookmarks from pinboard.
 #[derive(Parser)]
 pub struct Args {}
 

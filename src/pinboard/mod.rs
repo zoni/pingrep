@@ -89,4 +89,9 @@ impl BookmarkCollection {
             last_updated,
         })
     }
+
+    /// Find a bookmark by URL.
+    pub fn find_by_url(&self, url: &str) -> Option<&Bookmark> {
+        self.bookmarks.iter().find(|b| b.url == url)
+    }
 }

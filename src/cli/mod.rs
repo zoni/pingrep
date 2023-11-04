@@ -1,16 +1,19 @@
 mod commands;
 
-use snafu::OptionExt;
-use snafu::ResultExt;
+use std::fs::File;
+use std::io::BufReader;
 use std::path::PathBuf;
 
 use super::errors::*;
 use super::pinboard;
 use super::pinboard::client::Client;
 use crate::subcommands;
+
 use clap::{Parser, Subcommand};
 use commands::*;
 use directories::ProjectDirs;
+use snafu::OptionExt;
+use snafu::ResultExt;
 
 /// The global command context
 #[derive(Debug)]
@@ -38,7 +41,7 @@ pub struct Args {
     verbose: bool,
 }
 
-subcommands!(login, update, hello);
+subcommands!(login, update, show, hello, open);
 
 pub fn main() -> WhateverResult<()> {
     let args = Args::parse();
@@ -54,6 +57,7 @@ pub fn main() -> WhateverResult<()> {
     Commands::run(ctx, args)
 }
 
+/// Initialize the application directory, ensuring it exists.
 fn initialize_appdir() -> Result<PathBuf> {
     let projectdir =
         ProjectDirs::from("com.github", "zoni", "pingrep-rs").context(AppDirLookupSnafu)?;
@@ -83,5 +87,17 @@ impl Context {
                 message: "Cannot initialize pinboard client",
             })?;
         Ok(client)
+    }
+
+    fn read_bookmarks(&self) -> Result<pinboard::BookmarkCollection> {
+        let file = File::open(&self.bookmark_file).context(ReadSnafu {
+            path: self.bookmark_file.clone(),
+        })?;
+        let reader = BufReader::new(file);
+        let collection =
+            pinboard::BookmarkCollection::read(reader).context(PinboardClientSnafu {
+                message: "Cannot read bookmarks from file",
+            })?;
+        Ok(collection)
     }
 }
