@@ -28,7 +28,7 @@ pub enum Error {
 }
 
 /// A collection of [bookmarks][`Bookmark`]..
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct BookmarkCollection {
     /// The time the user's bookmarks were last updated.
     pub last_updated: DateTime<Utc>,
@@ -39,7 +39,7 @@ pub struct BookmarkCollection {
 }
 
 /// An individual pinboard bookmark.
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Bookmark {
     /// The URL of the bookmark.
     pub url: String,

@@ -1,7 +1,10 @@
+use std::thread;
+
 use crate::cli::filters;
 use crate::cli::Context;
 use crate::errors::*;
 use crate::pinboard::BookmarkCollection;
+
 use askama::Template;
 use clap::Parser;
 use duct::cmd;
@@ -18,7 +21,7 @@ pub struct Args {}
 #[template(path = "fzf.txt")]
 struct FzfTemplate<'a> {
     separator: &'a str,
-    collection: &'a BookmarkCollection,
+    collection: BookmarkCollection,
 }
 
 pub fn command(ctx: Context, _args: Args) -> WhateverResult<()> {
@@ -28,11 +31,10 @@ pub fn command(ctx: Context, _args: Args) -> WhateverResult<()> {
 
     let template = FzfTemplate {
         separator: FZF_FIELD_SEPARATOR,
-        collection: &collection,
+        collection,
     };
-    let input = template
-        .render()
-        .whatever_context("Unable to render input for fzf")?;
+    let (pipereader, mut pipewriter) = os_pipe::pipe().whatever_context("Unable to create pipe")?;
+    let template_writer = thread::spawn(move || template.write_into(&mut pipewriter));
 
     let exe = std::env::current_exe().whatever_context("unable to determine exe")?;
     let exe = exe
@@ -48,30 +50,33 @@ pub fn command(ctx: Context, _args: Args) -> WhateverResult<()> {
         "--preview",
         format!("{} show {{2}}", exe),
         "--bind",
-        "ctrl-y:execute-silent(echo {2} | cbcopy)",
+        "ctrl-y:execute(echo {2} | cbcopy)",
         "--bind",
-        format!("enter:become({} browse {{2}})", exe),
+        format!("enter:become({} open {{2}})", exe),
         "--bind",
-        format!("ctrl-o:execute-silent({} browse {{2}})", exe),
+        format!("ctrl-o:execute({} open {{2}})", exe),
         "--bind",
-        format!("ctrl-e:execute-silent({} browse {{5}})", exe),
+        format!("ctrl-e:execute({} open {{5}})", exe),
     );
     let handle = fzf
-        .stdin_bytes(input.as_bytes())
+        .stdin_file(pipereader)
         .unchecked()
         .start()
         .whatever_context("unable to start fzf")?;
 
     if let Ok(result) = handle.wait() {
         match result.status.code() {
-            Some(130) => {
-                // fzf returns 130 when selection is cancelled.
-                return Ok(());
-            }
+            Some(0) => (),
+            // fzf returns 130 when selection is cancelled.
+            Some(130) => (),
             Some(code) => whatever!("fzf exited with returncode {}", code),
             _ => whatever!("fzf terminated by signal"),
         }
     }
+    template_writer
+        .join()
+        .expect("Unable to join template writer thread")
+        .whatever_context("Failed to write bookmarks to fzf")?;
 
     Ok(())
 }

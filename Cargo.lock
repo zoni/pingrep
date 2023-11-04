@@ -1534,6 +1534,7 @@ dependencies = [
  "duct",
  "keyring",
  "open",
+ "os_pipe",
  "paste",
  "reqwest",
  "rpassword",
