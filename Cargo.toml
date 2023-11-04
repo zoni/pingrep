@@ -19,6 +19,7 @@ chrono = { version = "0.4.31", features = ["serde"] }
 clap = { version = "4.4.6", features = ["derive"] }
 directories = "5.0.1"
 dirs = "5.0.1"
+duct = "0.13.6"
 keyring = "2.0.5"
 open = "5.0.0"
 paste = "1.0.14"

@@ -1,3 +1,4 @@
+pub mod fzf;
 pub mod hello;
 pub mod login;
 pub mod open;

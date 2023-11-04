@@ -42,7 +42,7 @@ pub struct Args {
     verbose: bool,
 }
 
-subcommands!(login, update, show, hello, open);
+subcommands!(fzf, hello, login, open, show, update);
 
 pub fn main() -> WhateverResult<()> {
     let args = Args::parse();

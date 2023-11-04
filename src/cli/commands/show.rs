@@ -4,8 +4,7 @@ use crate::errors::*;
 use crate::pinboard::Bookmark;
 use askama::Template;
 use clap::Parser;
-use snafu::whatever;
-use snafu::ResultExt;
+use snafu::{OptionExt, ResultExt};
 
 /// Show a given bookmark
 #[derive(Parser)]
@@ -26,20 +25,19 @@ pub fn command(ctx: Context, args: Args) -> WhateverResult<()> {
         .read_bookmarks()
         .whatever_context("Unable to read bookmarks")?;
 
-    match collection.find_by_url(&args.url) {
-        Some(bookmark) => {
-            let template = ShowTemplate {
-                user: &collection.user,
-                bookmark: &bookmark,
-            };
-            println!(
-                "{}",
-                template
-                    .render()
-                    .whatever_context("Unable to render template")?
-            );
-            Ok(())
-        }
-        None => whatever!("Bookmark not found"),
-    }
+    let bookmark = collection
+        .find_by_url(&args.url)
+        .whatever_context("Bookmark not found")?;
+
+    let template = ShowTemplate {
+        user: &collection.user,
+        bookmark: &bookmark,
+    };
+    println!(
+        "{}",
+        template
+            .render()
+            .whatever_context("Unable to render template")?
+    );
+    Ok(())
 }
