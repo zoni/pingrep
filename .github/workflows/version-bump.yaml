@@ -7,6 +7,7 @@ name: Version bumps
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   version-bump:
