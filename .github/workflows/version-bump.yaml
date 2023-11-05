@@ -5,6 +5,9 @@ name: Version bumps
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   version-bump:
     name: Create version-bump PR
