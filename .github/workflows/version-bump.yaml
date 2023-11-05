@@ -19,7 +19,8 @@ jobs:
         run: |
           cargo binstall -y just
           cargo binstall -y cargo-release
-      - run: |
+      - name: Prepare release
+        run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
 
@@ -28,16 +29,19 @@ jobs:
           PATTERN="^Release pingrep v.+"
           COMMIT_TITLE=$(git show --no-patch --format=%s HEAD)
           if [[ $COMMIT_TITLE =~ $PATTERN ]]; then
+            set -x
             just release
             exit 0
           fi
 
           # Otherwise, prepare a version-bump PR.
+          set -x
           just bump-version
           git push --force origin HEAD:release-new-version
           curl \
             --header 'authorization: bearer ${{ secrets.GITHUB_TOKEN }}' \
             --header 'content-type: application/json' \
+            --fail-with-body \
             -XPOST 'https://api.github.com/repos/${{ github.repository }}/pulls' \
             --data '{
               "title": "${COMMIT_TITLE}",
