@@ -1,4 +1,4 @@
-name: release
+name: Version bumps
 
 'on':
   push:
@@ -17,8 +17,8 @@ jobs:
       - uses: cargo-bins/cargo-binstall@main
       - name: Install dependencies
         run: |
-          cargo binstall just
-          cargo binstall cargo-release
+          cargo binstall -y just
+          cargo binstall -y cargo-release
       - run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
