@@ -18,7 +18,7 @@ jobs:
       # github-actions bot, to ensure other workflows run in response to the PR
       # this creates. For more information, see:
       # https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
-      GH_TOKEN: ${{ secrets.NLXRBOT_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.NLXRBOT_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
