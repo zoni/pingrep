@@ -14,7 +14,11 @@ jobs:
     name: Create version-bump PR
     runs-on: ubuntu-latest
     env:
-      GH_TOKEN: ${{ github.token }}
+      # We need to associate the workflow with a regular user, not the
+      # github-actions bot, to ensure other workflows run in response to the PR
+      # this creates. For more information, see:
+      # https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
+      GH_TOKEN: ${{ secrets.NLXRBOT_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
