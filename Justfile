@@ -34,21 +34,36 @@ create-release-pr:
 	EXISTING_PR=$(gh api -X GET repos/{{github_repo_owner}}/{{github_repo_name}}/pulls -f base=main -F head={{github_repo_owner}}:release-new-version -q '.[].url')
 	if [[ $EXISTING_PR != "" ]]; then
 		gh api \
-		--method PATCH \
-		"${EXISTING_PR}" \
-		-f title="${COMMIT_TITLE}" \
-		-f body="${CHANGES}"
+			--method PATCH \
+			"${EXISTING_PR}" \
+			-f title="${COMMIT_TITLE}" \
+			-f body="${CHANGES}"
 	else
 		gh api \
-		--method POST \
-		repos/{{github_repo_owner}}/{{github_repo_name}}/pulls \
-		-f title="${COMMIT_TITLE}" \
-		-f body="${CHANGES}" \
-		-f head="release-new-version" \
-		-f base="main" \
-		-F maintainer_can_modify=true
+			--method POST \
+			repos/{{github_repo_owner}}/{{github_repo_name}}/pulls \
+			-f title="${COMMIT_TITLE}" \
+			-f body="${CHANGES}" \
+			-f head="release-new-version" \
+			-f base="main" \
+			-F maintainer_can_modify=true
 	fi
 
-release:
+create-release-tag:
+	#!/usr/bin/env bash
+
+	# Create the release tag. It's only purpose here is to make it easy to then
+	# grab the tag value, because it's a pain to get it from cargo metadata.
 	cargo release tag --execute --no-confirm
-	cargo release push --execute --no-confirm
+	VERSION=$(git tag --list 'v*' --sort version:refname | tail -1)
+	SHA_REF=$(git rev-parse HEAD)
+
+	# Create the tag via the GitHub API. This part is critical. If the tag
+	# above is pushed through git, then GitHub ignores the event. Only when
+	# it's created via the API like this does the release workflow get
+	# triggered.
+	gh api \
+		--method POST \
+		/repos/{{github_repo_owner}}/{{github_repo_name}}/git/refs \
+		-f ref="refs/tags/${VERSION}" \
+		-f sha="${SHA_REF}"
