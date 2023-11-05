@@ -27,36 +27,17 @@ jobs:
           cargo binstall -y cargo-release
       - name: Prepare release
         run: |
+          set -x
           git config user.name github-actions
           git config user.email github-actions@github.com
 
-          # Detect whether HEAD is a release commit, in which case we publish
-          # this release.
           PATTERN="^Release pingrep v.+"
           COMMIT_TITLE=$(git show --no-patch --format=%s HEAD)
           if [[ $COMMIT_TITLE =~ $PATTERN ]]; then
-            set -x
+            # If this was a release commit, publish this release.
             just release
-            exit 0
-          fi
-
-          # Otherwise, prepare a version-bump PR.
-          set -x
-          just bump-version
-          git push --force origin HEAD:release-new-version
-          COMMIT_TITLE=$(git show --no-patch --format=%s HEAD)
-          EXISTING_PR=$(gh api -X GET repos/{owner}/{repo}/pulls -f base=main -f head=zoni:release-new-version -q '.[].url')
-          if [[ $EXISTING_PR != "" ]]; then
-            gh api \
-            --method PATCH \
-            "${EXISTING_PR}" \
-            -f title="${COMMIT_TITLE}"
           else
-            gh api \
-            --method POST \
-            repos/{owner}/{repo}/pulls \
-            -f title="${COMMIT_TITLE}" \
-            -f head="release-new-version" \
-            -f base="main" \
-            -F maintainer_can_modify=true
+            # Otherwise prepare/update a version-bump PR for this commit.
+            just bump-version
+            just create-release-pr
           fi
