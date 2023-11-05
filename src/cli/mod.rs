@@ -61,7 +61,7 @@ pub fn main() -> WhateverResult<()> {
 /// Initialize the application directory, ensuring it exists.
 fn initialize_appdir() -> Result<PathBuf> {
     let projectdir =
-        ProjectDirs::from("com.github", "zoni", "pingrep-rs").context(AppDirLookupSnafu)?;
+        ProjectDirs::from("com.github", "zoni", "pingrep").context(AppDirLookupSnafu)?;
     let appdir = projectdir.data_dir();
 
     std::fs::create_dir_all(appdir).context(IOSnafu {
