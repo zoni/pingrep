@@ -2,22 +2,6 @@
 
 `pingrep` is a command-line tool designed to quickly and easily search through your [Pinboard] bookmarks locally.
 
-## Installation
-
-I don't provide binaries so you must build pingrep from source.
-[Ensure you have Go installed on your system][install-go], then install pingrep with:
-
-```sh
-go install github.com/zoni/pingrep@latest
-```
-
-To upgrade an older version, simply run the same command again.
-
-> [!IMPORTANT]
-> Executables are installed in the directory named by the `GOBIN` environment variable, which defaults to `$GOPATH/bin` or `$HOME/go/bin` if the `GOPATH` environment variable is not set.
->
-> Make sure your shell has this directory listed in the `$PATH` environment variable.
-
 ## Usage
 
 pingrep provides several commands to help you manage and search your Pinboard bookmarks.
@@ -45,6 +29,9 @@ This command opens an interactive search interface using [`fzf`][fzf], allowing 
 - `ctrl-y`: Copy the URL of the selected bookmark to the clipboard (requires [cbcopy]).
 
 ### `pingrep search <query> ...`
+
+> [!IMPORTANT]
+> This command has not been implemented yet.
 
 Search for bookmarks using one or more search queries.
 Replace `<query>` with your search terms.
