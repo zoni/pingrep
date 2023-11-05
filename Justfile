@@ -27,17 +27,20 @@ create-release-pr:
 
 	git push --force origin HEAD:release-new-version
 	COMMIT_TITLE=$(git show --no-patch --format=%s HEAD)
+	CHANGES=$(cargo release changes 2>&1)
 	EXISTING_PR=$(gh api -X GET repos/{owner}/{repo}/pulls -f base=main -F head={owner}:release-new-version -q '.[].url')
 	if [[ $EXISTING_PR != "" ]]; then
 		gh api \
 		--method PATCH \
 		"${EXISTING_PR}" \
-		-f title="${COMMIT_TITLE}"
+		-f title="${COMMIT_TITLE}" \
+		-f body="${CHANGES}"
 	else
 		gh api \
 		--method POST \
 		repos/{owner}/{repo}/pulls \
 		-f title="${COMMIT_TITLE}" \
+		-f body="${CHANGES}"
 		-f head="release-new-version" \
 		-f base="main" \
 		-F maintainer_can_modify=true
