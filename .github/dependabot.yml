@@ -1,8 +1,13 @@
 version: 2
 updates:
-  - package-ecosystem: gomod
+  - package-ecosystem: cargo
     directory: "/"
     schedule:
-      interval: weekly
+      interval: monthly
       day: friday
     open-pull-requests-limit: 15
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly
