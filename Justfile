@@ -1,3 +1,6 @@
+github_repo_owner := "zoni"
+github_repo_name := "pingrep"
+
 bump-version:
 	#!/usr/bin/env bash
 	set -euo pipefail
@@ -23,12 +26,12 @@ bump-version:
 
 create-release-pr:
 	#!/usr/bin/env bash
-	set -euo pipefail
+	set -xeuo pipefail
 
 	git push --force origin HEAD:release-new-version
 	COMMIT_TITLE=$(git show --no-patch --format=%s HEAD)
 	CHANGES=$(cargo release changes 2>&1)
-	EXISTING_PR=$(gh api -X GET repos/{owner}/{repo}/pulls -f base=main -F head={owner}:release-new-version -q '.[].url')
+	EXISTING_PR=$(gh api -X GET repos/{{github_repo_owner}}/{{github_repo_name}}/pulls -f base=main -F head={{github_repo_owner}}:release-new-version -q '.[].url')
 	if [[ $EXISTING_PR != "" ]]; then
 		gh api \
 		--method PATCH \
@@ -38,7 +41,7 @@ create-release-pr:
 	else
 		gh api \
 		--method POST \
-		repos/{owner}/{repo}/pulls \
+		repos/{{github_repo_owner}}/{{github_repo_name}}/pulls \
 		-f title="${COMMIT_TITLE}" \
 		-f body="${CHANGES}" \
 		-f head="release-new-version" \

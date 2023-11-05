@@ -11,14 +11,14 @@ permissions:
 
 jobs:
   version-bump:
-    name: Create version-bump PR
+    name: Create release tag/version-bump PR
     runs-on: ubuntu-latest
     env:
       # We need to associate the workflow with a regular user, not the
       # github-actions bot, to ensure other workflows run in response to the PR
       # this creates. For more information, see:
       # https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
-      GH_TOKEN: ${{ secrets.NLXRBOT_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.NLXRBOT_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,8 +32,8 @@ jobs:
       - name: Prepare release
         run: |
           set -x
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config user.name nlxrbot
+          git config user.email nlxrbot@nick.groenen.me
 
           PATTERN="^Release pingrep v.+"
           COMMIT_TITLE=$(git show --no-patch --format=%s HEAD)
