@@ -19,6 +19,7 @@ jobs:
         run: |
           cargo binstall -y just
           cargo binstall -y cargo-release
+          sudo apt install --no-install-recommends -y httpie
       - name: Prepare release
         run: |
           git config user.name github-actions
@@ -38,14 +39,15 @@ jobs:
           set -x
           just bump-version
           git push --force origin HEAD:release-new-version
-          curl \
-            --header 'authorization: bearer ${{ secrets.GITHUB_TOKEN }}' \
-            --header 'content-type: application/json' \
-            --fail-with-body \
-            -XPOST 'https://api.github.com/repos/${{ github.repository }}/pulls' \
-            --data '{
-              "title": "${COMMIT_TITLE}",
-              "head": "release-new-version",
-              "base": "main",
-              "maintainer_can_modify": true
-            }'
+          https \
+            --ignore-stdin \
+            --check-status \
+            --timeout 10 \
+            --json \
+            POST \
+            api.github.com/repos/${{ github.repository }}/pulls \
+            authorization:'bearer ${{ secrets.GITHUB_TOKEN }}' \
+            title="${COMMIT_TITLE}" \
+            head="release-new-version" \
+            base="main" \
+            maintainer_can_modify:=true
