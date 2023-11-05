@@ -53,5 +53,5 @@ targets = ["x86_64-unknown-linux-gnu", "aarch64-apple-darwin", "x86_64-apple-dar
 pr-run-mode = "upload"
 
 [package.metadata.release]
-pre-release-commit-message = "Release {{crate_name}} {{version}}"
+pre-release-commit-message = "Release {{crate_name}} v{{version}}"
 tag-message = "Release {{crate_name}} version {{version}} (previous release was {{prev_version}})"

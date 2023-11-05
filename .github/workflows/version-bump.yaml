@@ -1,0 +1,47 @@
+name: release
+
+'on':
+  push:
+    branches:
+      - main
+
+jobs:
+  version-bump:
+    name: Create version-bump PR
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        # in case of "refusing to merge unrelated histories", uncomment/increase
+        # with:
+        #   fetch-depth: 50
+      - uses: cargo-bins/cargo-binstall@main
+      - name: Install dependencies
+        run: |
+          cargo binstall just
+          cargo binstall cargo-release
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+
+          # Detect whether HEAD is a release commit, in which case we publish
+          # this release.
+          PATTERN="^Release pingrep v.+"
+          COMMIT_TITLE=$(git show --no-patch --format=%s HEAD)
+          if [[ $COMMIT_TITLE =~ $PATTERN ]]; then
+            just release
+            exit 0
+          fi
+
+          # Otherwise, prepare a version-bump PR.
+          just bump-version
+          git push --force origin HEAD:release-new-version
+          curl \
+            --header 'authorization: bearer ${{ secrets.GITHUB_TOKEN }}' \
+            --header 'content-type: application/json' \
+            -XPOST 'https://api.github.com/repos/${{ github.repository }}/pulls' \
+            --data '{
+              "title": "${COMMIT_TITLE}",
+              "head": "release-new-version",
+              "base": "main",
+              "maintainer_can_modify": true
+            }'

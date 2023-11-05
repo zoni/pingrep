@@ -20,3 +20,7 @@ bump-version:
 	VERSION=$(get_next_version_number)
 	cargo release version ${VERSION} --execute --no-confirm
 	cargo release commit --execute --no-confirm
+
+release:
+	cargo release tag --execute --no-confirm
+	cargo release push --execute --no-confirm
