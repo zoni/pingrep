@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 license = "BSD-2-Clause-Patent"
 repository = "https://github.com/zoni/pingrep/"
+description = "A command-line tool to quickly and easily search through your Pinboard bookmarks locally"
 
 [lib]
 name = "pingrep"
