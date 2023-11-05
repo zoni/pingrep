@@ -1,0 +1,11 @@
+{% for bookmark in collection.bookmarks -%}
+{{ bookmark.title|oneline -}}
+{{ separator -}}
+{{ bookmark.url|oneline -}}
+{{ separator -}}
+{{ bookmark.description|oneline -}}
+{{ separator -}}
+{% for tag in bookmark.tags %}#{{ tag }} {% endfor -%}
+{{ separator -}}
+https://pinboard.in/u:{{ collection.user }}/before:{{ bookmark.time.timestamp() }}
+{% endfor %}

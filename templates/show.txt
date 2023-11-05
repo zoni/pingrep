@@ -1,0 +1,11 @@
+{{ bookmark.url }}
+
+{{ bookmark.title|trim|textwrap(80) }}
+
+{{ bookmark.description|trim|textwrap(80) }}
+
+---
+
+Tags: {{ bookmark.tags|join(" ") }}
+Saved at: {{ bookmark.time }}
+Context: https://pinboard.in/u:{{ user }}/before:{{ bookmark.time.timestamp() }}
