@@ -9,6 +9,8 @@ jobs:
   version-bump:
     name: Create version-bump PR
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v2
         # in case of "refusing to merge unrelated histories", uncomment/increase
@@ -19,7 +21,6 @@ jobs:
         run: |
           cargo binstall -y just
           cargo binstall -y cargo-release
-          sudo apt install --no-install-recommends -y httpie
       - name: Prepare release
         run: |
           git config user.name github-actions
@@ -39,15 +40,19 @@ jobs:
           set -x
           just bump-version
           git push --force origin HEAD:release-new-version
-          https \
-            --ignore-stdin \
-            --check-status \
-            --timeout 10 \
-            --json \
-            POST \
-            api.github.com/repos/${{ github.repository }}/pulls \
-            authorization:'bearer ${{ secrets.GITHUB_TOKEN }}' \
-            title="${COMMIT_TITLE}" \
-            head="release-new-version" \
-            base="main" \
-            maintainer_can_modify:=true
+          COMMIT_TITLE=$(git show --no-patch --format=%s HEAD)
+          EXISTING_PR=$(gh api -X GET repos/{owner}/{repo}/pulls -f base=main -f head=zoni:release-new-version -q '.[].url')
+          if [[ $EXISTING_PR != "" ]]; then
+            gh api \
+            --method PATCH \
+            "${EXISTING_PR}" \
+            -f title="${COMMIT_TITLE}"
+          else
+            gh api \
+            --method POST \
+            repos/{owner}/{repo}/pulls \
+            -f title="${COMMIT_TITLE}" \
+            -f head="release-new-version" \
+            -f base="main" \
+            -F maintainer_can_modify=true
+          fi
