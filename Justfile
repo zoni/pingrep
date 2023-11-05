@@ -34,21 +34,28 @@ create-release-pr:
 	EXISTING_PR=$(gh api -X GET repos/{{github_repo_owner}}/{{github_repo_name}}/pulls -f base=main -F head={{github_repo_owner}}:release-new-version -q '.[].url')
 	if [[ $EXISTING_PR != "" ]]; then
 		gh api \
-		--method PATCH \
-		"${EXISTING_PR}" \
-		-f title="${COMMIT_TITLE}" \
-		-f body="${CHANGES}"
+			--method PATCH \
+			"${EXISTING_PR}" \
+			-f title="${COMMIT_TITLE}" \
+			-f body="${CHANGES}"
 	else
 		gh api \
-		--method POST \
-		repos/{{github_repo_owner}}/{{github_repo_name}}/pulls \
-		-f title="${COMMIT_TITLE}" \
-		-f body="${CHANGES}" \
-		-f head="release-new-version" \
-		-f base="main" \
-		-F maintainer_can_modify=true
+			--method POST \
+			repos/{{github_repo_owner}}/{{github_repo_name}}/pulls \
+			-f title="${COMMIT_TITLE}" \
+			-f body="${CHANGES}" \
+			-f head="release-new-version" \
+			-f base="main" \
+			-F maintainer_can_modify=true
 	fi
 
 release:
+	#!/usr/bin/env bash
 	cargo release tag --execute --no-confirm
-	cargo release push --execute --no-confirm
+	VERSION=$(git tag --list 'v*' --sort version:refname | tail -1)
+	SHA_REF=$(git rev-parse HEAD)
+	gh api \
+		--method POST \
+		/repos/{{github_repo_owner}}/{{github_repo_name}}/git/refs \
+		-f ref="refs/tags/${VERSION}" \
+		-f sha="${SHA_REF}"
