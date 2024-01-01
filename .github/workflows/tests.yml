@@ -74,7 +74,7 @@ jobs:
             cargo-base-${{ env.RUSTC_CACHEKEY }}
           fail-on-cache-miss: true
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
       - name: set PYVERSION
         run: echo "PYVERSION=$(python --version | tr ' ' '-')" >> $GITHUB_ENV
       - uses: actions/cache@v3
