@@ -18,7 +18,7 @@ path = "src/main.rs"
 anyhow = "1.0.80"
 askama = { version = "0.12.1", features = [] }
 chrono = { version = "0.4.31", features = ["serde"] }
-clap = { version = "4.4.10", features = ["derive"] }
+clap = { version = "4.5.1", features = ["derive"] }
 directories = "5.0.1"
 dirs = "5.0.1"
 duct = "0.13.6"
