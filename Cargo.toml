@@ -32,7 +32,7 @@ serde = { version = "1.0.193", features = ["serde_derive"] }
 serde_json = "1.0.107"
 snafu = "0.7.5"
 tempfile = "3.10.1"
-textwrap = { version = "0.16.0", features = ["terminal_size", "hyphenation"] }
+textwrap = { version = "0.16.1", features = ["terminal_size", "hyphenation"] }
 
 # The profile that 'cargo dist' will build with
 [profile.dist]
