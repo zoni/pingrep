@@ -1,6 +1,6 @@
 [package]
 name = "pingrep"
-version = "24.3.0"
+version = "24.5.0"
 edition = "2021"
 license = "BSD-2-Clause-Patent"
 repository = "https://github.com/zoni/pingrep/"
