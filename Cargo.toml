@@ -29,7 +29,7 @@ paste = "1.0.14"
 reqwest = { version = "0.11.24", features = ["blocking", "json"] }
 rpassword = "7.3.1"
 serde = { version = "1.0.197", features = ["serde_derive"] }
-serde_json = "1.0.114"
+serde_json = "1.0.116"
 snafu = "0.8.2"
 tempfile = "3.10.1"
 textwrap = { version = "0.16.1", features = ["terminal_size", "hyphenation"] }
