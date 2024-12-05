@@ -8,12 +8,12 @@ jobs:
     outputs:
       rustc_cache_key: ${{ steps.setup_rust.outputs.cachekey }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
       - uses: dtolnay/rust-toolchain@stable
         id: setup_rust
         with:
           components: "rustfmt, clippy"
-      - uses: actions/cache@v4
+      - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57  # v4
         with:
           path: |
             ~/.cargo/bin/
@@ -31,8 +31,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/cache@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
+      - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57  # v4
         with:
           path: |
             ~/.cargo/bin/
@@ -59,8 +59,8 @@ jobs:
       # These hooks are expensive and already run as dedicated jobs above
       SKIP: "tests,clippy"
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/cache@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
+      - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57  # v4
         with:
           path: |
             ~/.cargo/bin/
@@ -74,10 +74,10 @@ jobs:
             cargo-base-${{ env.RUSTC_CACHEKEY }}
           fail-on-cache-miss: true
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b  # v5
       - name: set PYVERSION
         run: echo "PYVERSION=$(python --version | tr ' ' '-')" >> $GITHUB_ENV
-      - uses: actions/cache@v4
+      - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57  # v4
         with:
           path: ~/.cache/pre-commit
           # Changes to pre-commit-config.yaml may require the installation of
