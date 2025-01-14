@@ -20,6 +20,9 @@ install-updater = false
 # Path that installers should place binaries in
 install-path = "CARGO_HOME"
 
+[dist.dependencies.apt]
+libdbus-1-dev = '*'
+
 [dist.github-custom-runners]
 # Helps ensure we link against modern LibSSL instead of something ancient
 x86_64-unknown-linux-gnu = "ubuntu-latest"
