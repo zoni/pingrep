@@ -9,7 +9,7 @@ jobs:
       rustc_cache_key: ${{ steps.setup_rust.outputs.cachekey }}
     steps:
       - run: sudo apt install libdbus-1-dev pkg-config
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
       - uses: dtolnay/rust-toolchain@stable
         id: setup_rust
         with:
@@ -33,7 +33,7 @@ jobs:
     needs: build
     steps:
       - run: sudo apt install libdbus-1-dev pkg-config
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
       - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684  # v4
         with:
           path: |
@@ -62,7 +62,7 @@ jobs:
       SKIP: "tests,clippy"
     steps:
       - run: sudo apt install libdbus-1-dev pkg-config
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
       - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684  # v4
         with:
           path: |
