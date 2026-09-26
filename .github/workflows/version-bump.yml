@@ -25,7 +25,7 @@ jobs:
         with:
           fetch-depth: 50
           fetch-tags: true
-      - uses: cargo-bins/cargo-binstall@main
+      - uses: cargo-bins/cargo-binstall@422f3094be6a0843857aa008b499caaf6bce0da8 # main
       - name: Install dependencies
         run: |
           cargo binstall -y just
