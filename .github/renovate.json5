@@ -1,6 +1,7 @@
 {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   extends: [
+    'github>zoni/renovate-config:default.json5',
     'github>zoni/renovate-config:rust.json5',
     'schedule:monthly',
   ],
