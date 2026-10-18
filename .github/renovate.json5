@@ -3,6 +3,7 @@
   extends: [
     'github>zoni/renovate-config:default.json5',
     'github>zoni/renovate-config:rust.json5',
+    'github>zoni/renovate-config:rust-automerge-lockfile.json5',
     'schedule:monthly',
   ],
 }
