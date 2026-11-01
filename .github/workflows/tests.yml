@@ -9,12 +9,12 @@ jobs:
       rustc_cache_key: ${{ steps.setup_rust.outputs.cachekey }}
     steps:
       - run: sudo apt install libdbus-1-dev pkg-config
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
+      - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
         id: setup_rust
         with:
           components: "rustfmt, clippy"
-      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684  # v4
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830  # v4
         with:
           path: |
             ~/.cargo/bin/
@@ -33,8 +33,8 @@ jobs:
     needs: build
     steps:
       - run: sudo apt install libdbus-1-dev pkg-config
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
-      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684  # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830  # v4
         with:
           path: |
             ~/.cargo/bin/
@@ -62,8 +62,8 @@ jobs:
       SKIP: "tests,clippy"
     steps:
       - run: sudo apt install libdbus-1-dev pkg-config
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4
-      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684  # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830  # v4
         with:
           path: |
             ~/.cargo/bin/
@@ -77,10 +77,10 @@ jobs:
             cargo-base-${{ env.RUSTC_CACHEKEY }}
           fail-on-cache-miss: true
 
-      - uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55  # v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065  # v5
       - name: set PYVERSION
         run: echo "PYVERSION=$(python --version | tr ' ' '-')" >> $GITHUB_ENV
-      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684  # v4
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830  # v4
         with:
           path: ~/.cache/pre-commit
           # Changes to pre-commit-config.yaml may require the installation of
